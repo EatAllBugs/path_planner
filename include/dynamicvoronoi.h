@@ -21,7 +21,7 @@ class DynamicVoronoi {
   //! Initialization with an empty map
   void initializeEmpty(int _sizeX, int _sizeY, bool initGridMap = true);
   //! Initialization with a given binary map (false==free, true==occupied)
-  void initializeMap(int _sizeX, int _sizeY, bool** _gridMap);
+  void initializeMap(int _sizeX, int _sizeY, bool **_gridMap);
 
   //! add an obstacle at the specified cell coordinate
   void occupyCell(int x, int y);
@@ -42,12 +42,16 @@ class DynamicVoronoi {
   //! checks whether the specficied location is occupied
   bool isOccupied(int x, int y) const;
   //! write the current distance map and voronoi diagram as ppm file
-  void visualize(const char* filename = "result.ppm");
+  void visualize(const char *filename = "result.ppm");
 
   //! returns the horizontal size of the workspace/map
-  unsigned int getSizeX() const {return sizeX;}
+  unsigned int getSizeX() const {
+    return sizeX;
+  }
   //! returns the vertical size of the workspace/map
-  unsigned int getSizeY() const {return sizeY;}
+  unsigned int getSizeY() const {
+    return sizeY;
+  }
 
   // was private, changed to public for obstX, obstY
  public:
@@ -71,12 +75,12 @@ class DynamicVoronoi {
   // methods
   void setObstacle(int x, int y);
   void removeObstacle(int x, int y);
-  inline void checkVoro(int x, int y, int nx, int ny, dataCell& c, dataCell& nc);
+  inline void checkVoro(int x, int y, int nx, int ny, dataCell &c, dataCell &nc);
   void recheckVoro();
   void commitAndColorize(bool updateRealDist = true);
-  inline void reviveVoroNeighbors(int& x, int& y);
+  inline void reviveVoroNeighbors(int &x, int &y);
 
-  inline bool isOccupied(int& x, int& y, dataCell& c);
+  inline bool isOccupied(int &x, int &y, dataCell &c);
   inline markerMatchResult markerMatch(int x, int y);
 
   // queues
@@ -91,8 +95,8 @@ class DynamicVoronoi {
   // maps
   int sizeY;
   int sizeX;
-  dataCell** data;
-  bool** gridMap;
+  dataCell **data;
+  bool **gridMap;
 
   // parameters
   int padding;

@@ -25,7 +25,9 @@ class ColorGradient {
 
  public:
   //-- Default constructor:
-  ColorGradient()  {  createDefaultHeatMapGradient();  }
+  ColorGradient()  {
+    createDefaultHeatMapGradient();
+  }
 
   //-- Inserts a new color point into its correct position:
   void addColorPoint(float red, float green, float blue, float value) {
@@ -35,12 +37,13 @@ class ColorGradient {
         return;
       }
     }
-
     color.push_back(ColorPoint(red, green, blue, value));
   }
 
   //-- Inserts a new color point into its correct position:
-  void clearGradient() { color.clear(); }
+  void clearGradient() {
+    color.clear();
+  }
 
   //-- Places a 5 color heapmap gradient into the "color" vector:
   void createDefaultHeatMapGradient() {
@@ -54,15 +57,14 @@ class ColorGradient {
 
   //-- Inputs a (value) between 0 and 1 and outputs the (red), (green) and (blue)
   //-- values representing that position in the gradient.
-  void getColorAtValue(const float value, float& red, float& green, float& blue) {
-    if (color.size() == 0)
-    { return; }
-
+  void getColorAtValue(const float value, float &red, float &green, float &blue) {
+    if (color.size() == 0) {
+      return;
+    }
     for (unsigned int i = 0; i < color.size(); i++) {
-      ColorPoint& currC = color[i];
-
+      ColorPoint &currC = color[i];
       if (value < currC.val) {
-        ColorPoint& prevC  = color[ max(0, (int)i - 1) ];
+        ColorPoint &prevC  = color[ max(0, (int)i - 1) ];
         float valueDiff    = (prevC.val - currC.val);
         float fractBetween = (valueDiff == 0) ? 0 : (value - currC.val) / valueDiff;
         red   = (prevC.r - currC.r) * fractBetween + currC.r;
@@ -71,7 +73,6 @@ class ColorGradient {
         return;
       }
     }
-
     red   = color.back().r;
     green = color.back().g;
     blue  = color.back().b;

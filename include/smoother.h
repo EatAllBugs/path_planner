@@ -28,17 +28,19 @@ class Smoother {
      smoothnessCost
      voronoiCost
   */
-  void smoothPath(DynamicVoronoi& voronoi);
+  void smoothPath(DynamicVoronoi &voronoi);
 
   /*!
      \brief Given a node pointer the path to the root node will be traced recursively
      \param node a 3D node, usually the goal node
      \param i a parameter for counting the number of nodes
   */
-  void tracePath(const Node3D* node, int i = 0, std::vector<Node3D> path = std::vector<Node3D>());
+  void tracePath(const Node3D *node, int i = 0, std::vector<Node3D> path = std::vector<Node3D>());
 
   /// returns the path of the smoother object
-  const std::vector<Node3D>& getPath() {return path;}
+  const std::vector<Node3D> &getPath() {
+    return path;
+  }
 
   /// obstacleCost - pushes the path away from obstacles
   Vector2D obstacleTerm(Vector2D xi);
@@ -55,7 +57,7 @@ class Smoother {
   /// a boolean test, whether vector is on the grid or not
   bool isOnGrid(Vector2D vec) {
     if (vec.getX() >= 0 && vec.getX() < width &&
-        vec.getY() >= 0 && vec.getY() < height) {
+      vec.getY() >= 0 && vec.getY() < height) {
       return true;
     }
     return false;

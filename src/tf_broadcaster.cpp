@@ -15,31 +15,25 @@ void setMap(const nav_msgs::OccupancyGrid::Ptr map) {
   grid = map;
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   // initiate the broadcaster
   ros::init(argc, argv, "tf_broadcaster");
   ros::NodeHandle n;
-
   // subscribe to map updates
   ros::Subscriber sub_map = n.subscribe("/occ_map", 1, setMap);
   tf::Pose tfPose;
-
-
   ros::Rate r(100);
   tf::TransformBroadcaster broadcaster;
-
   while (ros::ok()) {
     // transform from geometry msg to TF
     if (grid != nullptr) {
       tf::poseMsgToTF(grid->info.origin, tfPose);
     }
-
     // odom to map
     broadcaster.sendTransform(
       tf::StampedTransform(
         tf::Transform(tf::Quaternion(0, 0, 0, 1), tfPose.getOrigin()),
         ros::Time::now(), "odom", "map"));
-
     // map to path
     broadcaster.sendTransform(
       tf::StampedTransform(

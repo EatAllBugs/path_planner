@@ -32,7 +32,6 @@ static inline float normalizeHeading(float t) {
       t =  0;
     }
   }
-
   return t;
 }
 
@@ -46,7 +45,6 @@ static inline float normalizeHeadingRad(float t) {
     t = t - 2.f * M_PI * (int)(t / (2.f * M_PI));
     return 2.f * M_PI + t;
   }
-
   return t - 2.f * M_PI * (int)(t / (2.f * M_PI));
 }
 

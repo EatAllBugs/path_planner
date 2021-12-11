@@ -10,57 +10,47 @@ namespace Lookup {
 //###################################################
 //                                      DUBINS LOOKUP
 //###################################################
-inline void dubinsLookup(float* lookup) {
+inline void dubinsLookup(float *lookup) {
   bool DEBUG = false;
   std::cout << "I am building the Dubin's lookup table...";
-
   DubinsPath path;
-
   int width = Constants::dubinsWidth / Constants::cellSize;
-
   //  // increase the width by one to make it square
   //  if (width % 2 != 0) {
   //    width++;
   //  }
-
   const int headings = Constants::headings;
-
   // start and goal vector
   double start[3];
   double goal[] = {0, 0, 0};
-
   // iterate over the X index of a grid cell
   for (int X = 0; X < width; ++X) {
     start[0] = X;
-
     // iterate over the Y index of a grid cell
     for (int Y = 0; Y < width; ++Y) {
       start[1] = Y;
-
       // iterate over the start headings
       for (int h0 = 0; h0 < headings; ++h0) {
         start[2] = Constants::deltaHeadingRad * h0;
-
         // iterate over the goal headings
         for (int h1 = 0; h1 < headings; ++h1) {
           goal[2] = Constants::deltaHeadingRad * h1;
-
           // calculate the actual cost
           dubins_init(start, goal, Constants::r, &path);
-          lookup[X * headings * headings * width + Y * headings * headings + h0 * headings + h1] = dubins_path_length(&path);
-
-          if (DEBUG && lookup[X * headings * headings * width + Y * headings * headings + h0 * headings + h1] < sqrt(X * X + Y * Y) * 1.000001) {
+          lookup[X * headings * headings * width + Y * headings * headings + h0 * headings + h1] =
+            dubins_path_length(&path);
+          if (DEBUG &&
+            lookup[X * headings * headings * width + Y * headings * headings + h0 * headings + h1] < sqrt(
+              X * X + Y * Y) * 1.000001) {
             std::cout << X << " | " << Y << " | "
-                      << Constants::deltaHeadingDeg* h0 << " | "
-                      << Constants::deltaHeadingDeg* h1 << " length: "
-                      << lookup[X * headings * headings * width + Y * headings * headings + h0 * headings + h1] << "\n";
-
+              << Constants::deltaHeadingDeg *h0 << " | "
+              << Constants::deltaHeadingDeg *h1 << " length: "
+              << lookup[X * headings * headings * width + Y * headings * headings + h0 * headings + h1] << "\n";
           }
         }
       }
     }
   }
-
   std::cout << " done!" << std::endl;
 }
 
@@ -71,25 +61,26 @@ inline void dubinsLookup(float* lookup) {
 // _____________
 // SIGN FUNCTION
 inline int sign(double x) {
-  if (x >= 0) { return 1; }
-  else { return -1; }
+  if (x >= 0) {
+    return 1;
+  } else {
+    return -1;
+  }
 }
 
 // _________________________
 // COLLISION LOOKUP CREATION
-inline void collisionLookup(Constants::config* lookup) {
+inline void collisionLookup(Constants::config *lookup) {
   bool DEBUG = false;
   std::cout << "I am building the collision lookup table...";
   // cell size
   const float cSize = Constants::cellSize;
   // bounding box size length/width
   const int size = Constants::bbSize;
-
   struct point {
     double x;
     double y;
   };
-
   // ______________________
   // VARIABLES FOR ROTATION
   //center of the rectangle
@@ -98,10 +89,8 @@ inline void collisionLookup(Constants::config* lookup) {
   // points of the rectangle
   point p[4];
   point nP[4];
-
   // turning angle
   double theta;
-
   // ____________________________
   // VARIABLES FOR GRID TRAVERSAL
   // vector for grid traversal
@@ -125,14 +114,12 @@ inline void collisionLookup(Constants::config* lookup) {
   bool inside = false;
   int hcross1 = 0;
   int hcross2 = 0;
-
   // _____________________________
   // VARIABLES FOR LOOKUP CREATION
   int count = 0;
   const int positionResolution = Constants::positionResolution;
   const int positions = Constants::positions;
   point points[positions];
-
   // generate all discrete positions within one cell
   for (int i = 0; i < positionResolution; ++i) {
     for (int j = 0; j < positionResolution; ++j) {
@@ -140,52 +127,41 @@ inline void collisionLookup(Constants::config* lookup) {
       points[positionResolution * i + j].y = 1.f / positionResolution * i;
     }
   }
-
-
   for (int q = 0; q < positions; ++q) {
     // set the starting angle to zero;
     theta = 0;
-
     // set points of rectangle
     c.x = (double)size / 2 + points[q].x;
     c.y = (double)size / 2 + points[q].y;
-
     p[0].x = c.x - Constants::length / 2 / cSize;
     p[0].y = c.y - Constants::width / 2 / cSize;
-
     p[1].x = c.x - Constants::length / 2 / cSize;
     p[1].y = c.y + Constants::width / 2 / cSize;
-
     p[2].x = c.x + Constants::length / 2 / cSize;
     p[2].y = c.y + Constants::width / 2 / cSize;
-
     p[3].x = c.x + Constants::length / 2 / cSize;
     p[3].y = c.y - Constants::width / 2 / cSize;
-
     for (int o = 0; o < Constants::headings; ++o) {
-      if (DEBUG) { std::cout << "\ndegrees: " << theta * 180.f / M_PI << std::endl; }
-
+      if (DEBUG) {
+        std::cout << "\ndegrees: " << theta * 180.f / M_PI << std::endl;
+      }
       // initialize cSpace
       for (int i = 0; i < size; ++i) {
         for (int j = 0; j < size; ++j) {
           cSpace[i * size + j] = false;
         }
       }
-
       // shape rotation
       for (int j = 0; j < 4; ++j) {
         // translate point to origin
         temp.x = p[j].x - c.x;
         temp.y = p[j].y - c.y;
-
         // rotate and shift back
         nP[j].x = temp.x * cos(theta) - temp.y * sin(theta) + c.x;
         nP[j].y = temp.x * sin(theta) + temp.y * cos(theta) + c.y;
       }
-
       // create the next angle
       theta += Constants::deltaHeadingRad;
-
       // cell traversal clockwise
       for (int k = 0; k < 4; ++k) {
         // create the vectors clockwise
@@ -196,7 +172,6 @@ inline void collisionLookup(Constants::config* lookup) {
           start = nP[k];
           end = nP[0];
         }
-
         //set indexes
         X = (int)start.x;
         Y = (int)start.y;
@@ -206,33 +181,28 @@ inline void collisionLookup(Constants::config* lookup) {
         t.y = end.y - start.y;
         stepX = sign(t.x);
         stepY = sign(t.y);
-
         // width and height normalized by t
         if (t.x != 0) {
           tDeltaX = 1.f / std::abs(t.x);
         } else {
           tDeltaX = 1000;
         }
-
         if (t.y != 0) {
           tDeltaY = 1.f / std::abs(t.y);
         } else {
           tDeltaY = 1000;
         }
-
         // set maximum traversal values
         if (stepX > 0) {
           tMaxX = tDeltaX * (1 - (start.x - (long)start.x));
         } else {
           tMaxX = tDeltaX * (start.x - (long)start.x);
         }
-
         if (stepY > 0) {
           tMaxY = tDeltaY * (1 - (start.y - (long)start.y));
         } else {
           tMaxY = tDeltaY * (start.y - (long)start.y);
         }
-
         while ((int)end.x != X || (int)end.y != Y) {
           // only increment x if the t length is smaller and the result will be closer to the goal
           if (tMaxX < tMaxY && std::abs(X + stepX - (int)end.x) < std::abs(X - (int)end.x)) {
@@ -259,36 +229,29 @@ inline void collisionLookup(Constants::config* lookup) {
           }
         }
       }
-
       // FILL THE SHAPE
       for (int i = 0; i < size; ++i) {
         // set inside to false
         inside = false;
-
         for (int j = 0; j < size; ++j) {
-
           // determine horizontal crossings
           for (int k = 0; k < size; ++k) {
             if (cSpace[i * size + k] && !inside) {
               hcross1 = k;
               inside = true;
             }
-
             if (cSpace[i * size + k] && inside) {
               hcross2 = k;
             }
           }
-
           // if inside fill
           if (j > hcross1 && j < hcross2 && inside) {
             cSpace[i * size + j] = true;
           }
         }
       }
-
       // GENERATE THE ACTUAL LOOKUP
       count = 0;
-
       for (int i = 0; i < size; ++i) {
         for (int j = 0; j < size; ++j) {
           if (cSpace[i * size + j]) {
@@ -300,14 +263,11 @@ inline void collisionLookup(Constants::config* lookup) {
           }
         }
       }
-
       lookup[q * Constants::headings + o].length = count;
-
       if (DEBUG) {
         //DEBUG
         for (int i = 0; i < size; ++i) {
           std::cout << "\n";
-
           for (int j = 0; j < size; ++j) {
             if (cSpace[i * size + j]) {
               std::cout << "#";
@@ -316,17 +276,16 @@ inline void collisionLookup(Constants::config* lookup) {
             }
           }
         }
-
         //TESTING
-        std::cout << "\n\nthe center of " << q* Constants::headings + o << " is at " << c.x << " | " << c.y << std::endl;
-
+        std::cout << "\n\nthe center of " << q *Constants::headings + o << " is at " << c.x << " | " << c.y
+          << std::endl;
         for (int i = 0; i < lookup[q * Constants::headings + o].length; ++i) {
-          std::cout << "[" << i << "]\t" << lookup[q * Constants::headings + o].pos[i].x << " | " << lookup[q * Constants::headings + o].pos[i].y << std::endl;
+          std::cout << "[" << i << "]\t" << lookup[q * Constants::headings + o].pos[i].x << " | " << lookup[q
+              * Constants::headings + o].pos[i].y << std::endl;
         }
       }
     }
   }
-
   std::cout << " done!" << std::endl;
 }
 

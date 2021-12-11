@@ -115,7 +115,7 @@ static const int dubinsArea = dubinsWidth * dubinsWidth;
 // COLLISION LOOKUP SPECIFIC
 
 /// [m] -- The bounding box size length and width to precompute all possible headings
-static const int bbSize = std::ceil((sqrt(width * width + length* length) + 4) / cellSize);
+static const int bbSize = std::ceil((sqrt(width * width + length *length) + 4) / cellSize);
 /// [#] --- The sqrt of the number of discrete positions per cell
 static const int positionResolution = 10;
 /// [#] --- The number of discrete positions per cell

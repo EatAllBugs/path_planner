@@ -26,20 +26,17 @@ class Path {
     std::string pathTopic = "/path";
     std::string pathNodesTopic = "/pathNodes";
     std::string pathVehicleTopic = "/pathVehicle";
-
     if (smoothed) {
       pathTopic = "/sPath";
       pathNodesTopic = "/sPathNodes";
       pathVehicleTopic = "/sPathVehicle";
       this->smoothed = smoothed;
     }
-
     // _________________
     // TOPICS TO PUBLISH
     pubPath = n.advertise<nav_msgs::Path>(pathTopic, 1);
     pubPathNodes = n.advertise<visualization_msgs::MarkerArray>(pathNodesTopic, 1);
     pubPathVehicles = n.advertise<visualization_msgs::MarkerArray>(pathVehicleTopic, 1);
-
     // CONFIGURE THE CONTAINER
     path.header.frame_id = "path";
   }
@@ -62,19 +59,19 @@ class Path {
      \brief Adds a segment to the path
      \param node a 3D node
   */
-  void addSegment(const Node3D& node);
+  void addSegment(const Node3D &node);
   /*!
      \brief Adds a node to the path
      \param node a 3D node
      \param i a parameter for counting the number of nodes
   */
-  void addNode(const Node3D& node, int i);
+  void addNode(const Node3D &node, int i);
   /*!
      \brief Adds a vehicle shape to the path
      \param node a 3D node
      \param i a parameter for counting the number of nodes
   */
-  void addVehicle(const Node3D& node, int i);
+  void addVehicle(const Node3D &node, int i);
 
   // ______________
   // PUBLISH METHODS
@@ -82,11 +79,17 @@ class Path {
   /// Clears the path
   void clear();
   /// Publishes the path
-  void publishPath() { pubPath.publish(path); }
+  void publishPath() {
+    pubPath.publish(path);
+  }
   /// Publishes the nodes of the path
-  void publishPathNodes() { pubPathNodes.publish(pathNodes); }
+  void publishPathNodes() {
+    pubPathNodes.publish(pathNodes);
+  }
   /// Publishes the vehicle along the path
-  void publishPathVehicles() { pubPathVehicles.publish(pathVehicles); }
+  void publishPathVehicles() {
+    pubPathVehicles.publish(pathVehicles);
+  }
 
  private:
   /// A handle to the ROS node

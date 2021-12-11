@@ -18,18 +18,16 @@ bool CollisionDetection::configurationTest(float x, float y, float t) const {
   int idx = iY * Constants::positionResolution * Constants::headings + iX * Constants::headings + iT;
   int cX;
   int cY;
-
   for (int i = 0; i < collisionLookup[idx].length; ++i) {
     cX = (X + collisionLookup[idx].pos[i].x);
     cY = (Y + collisionLookup[idx].pos[i].y);
-
     // make sure the configuration coordinates are actually on the grid
-    if (cX >= 0 && (unsigned int)cX < grid->info.width && cY >= 0 && (unsigned int)cY < grid->info.height) {
+    if (cX >= 0 && (unsigned int)cX < grid->info.width && cY >= 0 &&
+      (unsigned int)cY < grid->info.height) {
       if (grid->data[cY * grid->info.width + cX]) {
         return false;
       }
     }
   }
-
   return true;
 }

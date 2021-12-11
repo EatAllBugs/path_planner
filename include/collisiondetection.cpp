@@ -1,7 +1,5 @@
 #include "collisiondetection.h"
 
-CollisionDetection::CollisionDetection()
-{
-
+CollisionDetection::CollisionDetection() {
 }
 
